@@ -41,20 +41,24 @@ class Sensor {
 
 class IotServer {
     constructor() {
-        this.sensors = [];
+        this.running_sensors = [];
     }
 
     start(sensor) {
-        this.sensors.push(sensor.shift());
+        this.running_sensors.push(...sensor);
     }
 
-    publish(obj) {
-        if (this.sensors[0].powerStatus === "on") {
-            this.deviceId = obj.deviceId;
-            this.actionId = obj.actionId;
-            this.payload = obj.payload;
-            this.sensors[0].reportingInterval = obj.payload;
+    publish(sensor) {
+
+        for (const i of this.running_sensors) {
+            if (i.id === sensor.deviceId) {
+                if (i.powerStatus === "on") {
+                    i.reportingInterval = sensor.payload;
+                }
+            }
         }
+
+
     }
 }
 

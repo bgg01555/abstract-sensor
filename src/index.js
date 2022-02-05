@@ -5,13 +5,13 @@ class Sensor {
         this.reportingInterval = 10000;
     }
 
-    turn(buttons) {
-        if (this.powerStatus === buttons) {
+    turn(onoff) {
+        if (this.powerStatus === onoff) {
             throw new sameButtonTypeError();
         }
 
-        if (buttons === "on") {
-            this.powerStatus = buttons;
+        if (onoff === "on") {
+            this.powerStatus = onoff;
             this.status = "idle";
 
 
@@ -20,21 +20,13 @@ class Sensor {
             setTimeout(() => this.status = "idle", this.reportingInterval + 1000);
 
         }
-        else if (buttons === "off") {
-            this.powerStatus = buttons;
+        else if (onoff === "off") {
+            this.powerStatus = onoff;
         }
         else throw new otherButtonTypeError();
 
 
     }
-
-
-
-
-
-
-
-
 
 
 }
@@ -48,13 +40,13 @@ class IotServer {
         this.running_sensors.push(...sensor);
     }
 
-    publish(sensor) {
+    publish(eventObj) {
 
-        for (const i of this.running_sensors) {
-            if (i.id === sensor.deviceId) {
-                if (i.powerStatus === "on") {
-                    if (sensor.actionId === 'CHANGE_REPORTING_INTERVAL') {
-                        i.reportingInterval = sensor.payload;
+        for (const sensor of this.running_sensors) {
+            if (sensor.id === eventObj.deviceId) {
+                if (sensor.powerStatus === "on") {
+                    if (eventObj.actionId === 'CHANGE_REPORTING_INTERVAL') {
+                        sensor.reportingInterval = eventObj.payload;
                     }
                 }
             }

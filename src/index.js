@@ -53,7 +53,9 @@ class IotServer {
         for (const i of this.running_sensors) {
             if (i.id === sensor.deviceId) {
                 if (i.powerStatus === "on") {
-                    i.reportingInterval = sensor.payload;
+                    if (sensor.actionId === 'CHANGE_REPORTING_INTERVAL') {
+                        i.reportingInterval = sensor.payload;
+                    }
                 }
             }
         }

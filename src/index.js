@@ -3,6 +3,20 @@ class Sensor {
         this.id = id;
         this.powerStatus = 'off';
         this.reportingInterval = 10000;
+        this.status = '';
+    }
+
+    distance_determination(that) {
+        console.log(that.status);
+        that.status = "sensingDistance";
+        setTimeout(() => that.data_reporting(that), 500);
+
+    }
+    data_reporting(that) {
+        console.log(that.status, 10);
+        that.status = "reportingData";
+        setTimeout(() => that.status = "idle", 1000);
+
     }
 
     turn(onoff) {
@@ -13,12 +27,7 @@ class Sensor {
         if (onoff === "on") {
             this.powerStatus = onoff;
             this.status = "idle";
-
-
-            setTimeout(() => this.status = "sensingDistance", this.reportingInterval);
-            setTimeout(() => this.status = "reportingData", this.reportingInterval + 500);
-            setTimeout(() => this.status = "idle", this.reportingInterval + 1000);
-
+            setTimeout(() => this.distance_determination(this), this.reportingInterval);
         }
         else if (onoff === "off") {
             this.powerStatus = onoff;
@@ -41,7 +50,6 @@ class IotServer {
     }
 
     publish(eventObj) {
-
         for (const sensor of this.running_sensors) {
             if (sensor.id === eventObj.deviceId) {
                 if (sensor.powerStatus === "on") {

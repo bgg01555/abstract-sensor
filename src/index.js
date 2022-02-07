@@ -4,19 +4,22 @@ class Sensor {
         this.powerStatus = 'off';
         this.reportingInterval = 10000;
         this.status = '';
+        this.running_settimeout_Id;
     }
 
-    distance_determination(that) {
-        console.log(that.status);
-        that.status = "sensingDistance";
-        setTimeout(() => that.data_reporting(that), 500);
-
+    distance_determination() {
+        this.status = "sensingDistance";
+        this.running_settimeout_Id = setTimeout(() => this.data_reporting(), 500);
     }
-    data_reporting(that) {
-        console.log(that.status, 10);
-        that.status = "reportingData";
-        setTimeout(() => that.status = "idle", 1000);
 
+    data_reporting() {
+        this.status = "reportingData";
+        this.running_settimeout_Id = setTimeout(() => this.switch_idle(), 1000);
+    }
+
+    switch_idle() {
+        this.status = "idle"
+        this.running_settimeout_Id = setTimeout(() => this.distance_determination(), this.reportingInterval);
     }
 
     turn(onoff) {
@@ -27,17 +30,15 @@ class Sensor {
         if (onoff === "on") {
             this.powerStatus = onoff;
             this.status = "idle";
-            setTimeout(() => this.distance_determination(this), this.reportingInterval);
+            setTimeout(() => this.distance_determination(), this.reportingInterval);
         }
         else if (onoff === "off") {
             this.powerStatus = onoff;
+            clearTimeout(this.running_settimeout_Id);
+            this.running_settimeout_Id = '';
         }
         else throw new otherButtonTypeError();
-
-
     }
-
-
 }
 
 class IotServer {

@@ -23,8 +23,8 @@ class Sensor {
     }
 
     turn(onoff) {
-        if (this.powerStatus === onoff) {
-            throw new sameButtonTypeError();
+        if (this.powerStatus === "on" && onoff === "on") {
+            throw new sameButtonTypeError('이미 켜져있는 센서입니다.');
         }
 
         if (onoff === "on") {
@@ -37,7 +37,7 @@ class Sensor {
             clearTimeout(this.running_settimeout_Id);
             this.running_settimeout_Id = '';
         }
-        else throw new otherButtonTypeError();
+        else throw new otherButtonTypeError('on/off 에 해당하지 않는 값입니다.');
     }
 }
 

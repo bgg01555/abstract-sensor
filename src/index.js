@@ -50,17 +50,12 @@ class IotServer {
     }
 
     publish(eventObj) {
-        for (const sensor of this.running_sensors) {
-            if (sensor.id === eventObj.deviceId) {
-                if (sensor.powerStatus === "on") {
-                    if (eventObj.actionId === 'CHANGE_REPORTING_INTERVAL') {
-                        sensor.reportingInterval = eventObj.payload;
-                    }
-                }
+        let sensor = this.running_sensors.find(x => x.id === eventObj.deviceId);
+        if (sensor.powerStatus === "on") {
+            if (eventObj.actionId === 'CHANGE_REPORTING_INTERVAL') {
+                sensor.reportingInterval = eventObj.payload;
             }
         }
-
-
     }
 }
 
